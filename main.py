@@ -39,7 +39,8 @@ elif spy_rating > 3.5 and spy_rating <= 4.5:
 elif spy_rating >= 2.5 and spy_rating <= 3.5:
     print("You have it in you.")
 else:
-    print("You need to improve.")
+    print("Sorry, %s your rating is too low to be a spy." % spy_name)
+    exit()
 
 print("So, %s.%s, you are %d old with a %.1f rating." % (salutation, spy_name, spy_age, spy_rating))
 
