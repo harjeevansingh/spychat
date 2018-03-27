@@ -55,7 +55,7 @@ def app_menu(spy_name, spy_age, spy_rating ):
         elif choice == "2":
             print("You have ", add_friend(), "friends.")
         else:
-            exit()
+            show_menu = False
 
 
 # Setting the status updates
