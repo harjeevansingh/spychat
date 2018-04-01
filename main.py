@@ -110,7 +110,7 @@ def add_friend():
     friend["chats"] = []
     # checking the friend's eligibility
     if len(friend["name"]) > 0 and friend["age"] in range(13, 51) and friend["rating"] > spy["rating"]:
-        print friend, "\t ", friend_list  # tsting
+        print friend, "\t ", friend_list  # testing
         friend_list.append(friend)
         print friend, "\t ", friend_list  # for testing
     else:
@@ -120,8 +120,9 @@ def add_friend():
 
 def select_a_friend():
     friend_num = 1
-    # for testing
-    print friend, "\t", friend_list
+
+    print friend, "\t", friend_list  # testing
+
     for friend_name in friend_list:
         print "%d. %s " % (friend_num, friend_name["name"])
         friend_num += 1
@@ -137,7 +138,7 @@ def send_message():
     Steganography.encode(image_path, output_path, text)
     present_time = datetime.now()
     chat = {"Message": text, "Time": present_time, "Sent by me": True}
-    friend_list[reciever_friend]["Chats"].append(chat)
+    friend_list[reciever_friend]["chats"].append(chat)
     print "Your secret message is ready."
 
 
@@ -149,7 +150,7 @@ def read_message():
     print "Your secret message is ready:\n"
     print message, "\n"
     chat = {"Message": message, "Time": present_time, "Sent by me": False}
-    friend_list[sender_friend]['Chats'].append(chat)
+    friend_list[sender_friend]['chats'].append(chat)
     print friend_list  # testing
 
 
