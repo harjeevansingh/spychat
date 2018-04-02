@@ -58,7 +58,10 @@ def app_menu():
         if choice == "1":
             current_status_message = add_status(current_status_message)
         elif choice == "2":
-            print "You have ", add_friend(), "friend_list.\n"
+
+            num_of_friends = add_friend()
+            print "You have ", num_of_friends, " friends.\n"
+
         elif choice == "3":
             send_message()
         elif choice == "4":
@@ -98,10 +101,8 @@ def add_status(current_status_message):
             print "Invalid status!!"
 
 
-friend = {}
-
-
 def add_friend():
+    friend = {}
     new_name = raw_input("Enter the friend's name.")
     new_salutation = raw_input("Salutation for friend's name.")
     friend["age"] = int(raw_input("What's the friend's age?"))
@@ -110,9 +111,9 @@ def add_friend():
     friend["chats"] = []
     # checking the friend's eligibility
     if len(friend["name"]) > 0 and friend["age"] in range(13, 51) and friend["rating"] > spy["rating"]:
-        print friend, "\t ", friend_list  # testing
+
         friend_list.append(friend)
-        print friend, "\t ", friend_list  # for testing
+
     else:
         print "Sorry, your friend is not eligible to be a spy. \n"
     return len(friend_list)
@@ -120,9 +121,6 @@ def add_friend():
 
 def select_a_friend():
     friend_num = 1
-
-    print friend, "\t", friend_list  # testing
-
     for friend_name in friend_list:
         print "%d. %s " % (friend_num, friend_name["name"])
         friend_num += 1
@@ -131,15 +129,15 @@ def select_a_friend():
 
 
 def send_message():
-    reciever_friend = int(select_a_friend()) - 1
+    receiver_friend = int(select_a_friend()) - 1
     image_path = raw_input("Enter the path/name of image: ")
     output_path = raw_input("Give the path/name for output: ")
     text = raw_input("Enter the message to send: ")
     Steganography.encode(image_path, output_path, text)
     present_time = datetime.now()
     chat = {"Message": text, "Time": present_time, "Sent by me": True}
-    friend_list[reciever_friend]["chats"].append(chat)
-    print "Your secret message is ready."
+    friend_list[receiver_friend]["chats"].append(chat)
+    print "Your secret message is ready. \n"
 
 
 def read_message():
@@ -151,7 +149,7 @@ def read_message():
     print message, "\n"
     chat = {"Message": message, "Time": present_time, "Sent by me": False}
     friend_list[sender_friend]['chats'].append(chat)
-    print friend_list  # testing
+
 
 
 
