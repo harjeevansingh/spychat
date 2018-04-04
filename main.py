@@ -1,5 +1,5 @@
 # Let the spying begin xD
-from some import Spy, ChatMessage
+from spy_details import Spy, ChatMessage
 from steganography.steganography import Steganography
 from datetime import datetime
 
