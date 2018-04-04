@@ -150,7 +150,7 @@ def read_message():
     #present_time = datetime.now()
     print "Your secret message is ready:\n"
     print message, "\n"
-    chat = (ChatMessage, False)
+    chat = ChatMessage(message, False)
     friend_list[sender_friend].chats.append(chat)
 
 
