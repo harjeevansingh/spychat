@@ -1,5 +1,5 @@
 # Let the spying begin xD
-from spy_details import spy
+from some import Spy, ChatMessage
 from steganography.steganography import Steganography
 from datetime import datetime
 
@@ -11,39 +11,40 @@ print "Welcome To The Spychat "
 def_name = raw_input("Would you like to continue with default  Spy profile? (y/n)")
 
 if def_name.upper() == "N":
-    spy["name"] = raw_input("Choose Your SpyName")
-    if len(spy["name"]) > 0:
+    name = raw_input("Choose Your SpyName")
+    if len(name) > 0:
         # now we will ask for the salutation
-        spy["salutation"] = raw_input("What should be your salutation Mr or Ms ")
-        print "Alright %s.%s I'd like to know a little bit more about you..." % (spy["salutation"], spy["name"])
+        salutation = raw_input("What should be your salutation Mr or Ms ")
+        print "Alright %s.%s I'd like to know a little bit more about you..." % (salutation, name)
 
         # asking other details
-        spy["age"] = int(raw_input("What is your age?"))
+        age = int(raw_input("What is your age?"))
 
         # checking the spy eligibility
-        if spy["age"] in range(13, 51):
-            spy["rating"] = float(raw_input("Enter your rating."))
+        if age in range(13, 51):
+            rating = float(raw_input("Enter your rating."))
         else:
             print "Sorry you are not suitable to be a spy."
             exit()
+        spy = Spy(name, salutation, age, rating)
     else:
         print "You have to enter your name to proceed."
         exit()
 else:
-    pass
+    spy = Spy("singh", "Mr", 34, 3.3)
 
 print '''\nWelcome %s.%s to the Spy Chat. So, you are %d old with a %.1f rating.
-        ''' % (spy["salutation"], spy["name"], spy["age"], spy["rating"])
+        ''' % (spy.salutation, spy.name, spy.age, spy.rating)
 
 # Giving messages acco. to the ratings
-if spy["rating"] > 4.5:
+if spy.rating > 4.5:
     print "According to your Spy Rating, You are a Pro!!!"
-elif spy["rating"] > 3.5 and spy["rating"] <= 4.5:
+elif spy.rating > 3.5 and spy.rating <= 4.5:
     print "According to your Spy Rating, you are perfect!!!"
-elif spy["rating"] >= 2.5 and spy["rating"] <= 3.5:
+elif spy.rating >= 2.5 and spy.rating <= 3.5:
     print "According to your Spy Rating, You can do better."
 else:
-    print "Sorry, %s your rating is too low to be a spy." % spy["name"]
+    print "Sorry, %s your rating is too low to be a spy." % spy.name
     exit()
 
 
@@ -78,7 +79,7 @@ def add_status(current_status_message):
     if current_status_message is None:
         print "You don't have any current status."
     else:
-        print "Your current status message is "+'"'+current_status_message+'"'
+        print "Your current status message is " + '"' + current_status_message + '"'
 
     # Providing the old status updates
     status_change = raw_input("Would you like to choose from old status updates?  (y/n)")
@@ -88,8 +89,8 @@ def add_status(current_status_message):
             print j, ". ", i
             j += 1
         status_num = int(raw_input("Select the position of the status from above list."))
-        current_status_message = status_updates[status_num-1]
-        print '"'+current_status_message+'"', " is the current status message.\n"
+        current_status_message = status_updates[status_num - 1]
+        print '"' + current_status_message + '"', " is the current status message.\n"
         return current_status_message
     else:
         current_status_message = raw_input("Add the desired Status Message.")
@@ -102,16 +103,16 @@ def add_status(current_status_message):
 
 
 def add_friend():
-    friend = {}
-    new_name = raw_input("Enter the friend's name.")
-    new_salutation = raw_input("Salutation for friend's name.")
-    friend["age"] = int(raw_input("What's the friend's age?"))
-    friend["rating"] = float(raw_input("Enter the friend's rating."))
-    friend["name"] = new_salutation+"."+new_name
-    friend["chats"] = []
+    name = raw_input("Enter the friend's name.")
+    salutation = raw_input("Salutation for friend's name.")
+    age = int(raw_input("What's the friend's age?"))
+    rating = float(raw_input("Enter the friend's rating."))
+    # name = new_salutation + "." + new_name
+    # chats = []
     # checking the friend's eligibility
-    if len(friend["name"]) > 0 and friend["age"] in range(13, 51) and friend["rating"] > spy["rating"]:
+    if len(name) > 0 and age in range(13, 51) and rating > spy.rating:
 
+        friend = Spy(name, salutation, age, rating)
         friend_list.append(friend)
 
     else:
@@ -122,7 +123,7 @@ def add_friend():
 def select_a_friend():
     friend_num = 1
     for friend_name in friend_list:
-        print "%d. %s " % (friend_num, friend_name["name"])
+        print "%d. %s " % (friend_num, friend_name.name)
         friend_num += 1
     print "Enter the number of the respective friend from the above list: "
     return raw_input()
@@ -134,9 +135,11 @@ def send_message():
     output_path = raw_input("Give the path/name for output: ")
     text = raw_input("Enter the message to send: ")
     Steganography.encode(image_path, output_path, text)
-    present_time = datetime.now()
-    chat = {"Message": text, "Time": present_time, "Sent by me": True}
-    friend_list[receiver_friend]["chats"].append(chat)
+    #present_time = datetime.now()
+    #chat = {"Message": text, "Time": present_time, "Sent by me": True}
+    chat = ChatMessage(text, True)
+    friend_list[receiver_friend].chats.append(chat)
+
     print "Your secret message is ready. \n"
 
 
@@ -144,13 +147,11 @@ def read_message():
     sender_friend = int(select_a_friend()) - 1
     path = raw_input("Enter the path/name of the file: ")
     message = Steganography.decode(path)
-    present_time = datetime.now()
+    #present_time = datetime.now()
     print "Your secret message is ready:\n"
     print message, "\n"
-    chat = {"Message": message, "Time": present_time, "Sent by me": False}
-    friend_list[sender_friend]['chats'].append(chat)
-
-
+    chat = (ChatMessage, False)
+    friend_list[sender_friend].chats.append(chat)
 
 
 app_menu()
