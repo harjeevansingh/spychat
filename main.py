@@ -2,10 +2,22 @@
 from spy_details import Spy, ChatMessage
 from steganography.steganography import Steganography
 from datetime import datetime
+import csv
 
 friend_list = []
 
 print "Welcome To The Spychat "
+
+
+def load_friends():
+    with open("friends.csv", "rb") as friends:
+        reader = csv.reader(friends)
+
+        for row in reader:
+            friend_list.append(Spy(row[0], row[1], row[2], row[3]))
+
+
+load_friends()
 
 # Knowing whether the spy wants default name
 def_name = raw_input("Would you like to continue with default  Spy profile? (y/n)")
@@ -113,7 +125,11 @@ def add_friend():
     if len(name) > 0 and age in range(13, 51) and rating > spy.rating:
 
         friend = Spy(name, salutation, age, rating)
+        with open("friends.csv", "a") as friends:
+            writer = csv.writer(friends)
+            writer.writerow([friend.name, friend.salutation, friend.age, friend.rating, friend.is_online])
         friend_list.append(friend)
+        print "Friend added!!"
 
     else:
         print "Sorry, your friend is not eligible to be a spy. \n"
@@ -135,9 +151,12 @@ def send_message():
     output_path = raw_input("Give the path/name for output: ")
     text = raw_input("Enter the message to send: ")
     Steganography.encode(image_path, output_path, text)
-    #present_time = datetime.now()
-    #chat = {"Message": text, "Time": present_time, "Sent by me": True}
+    present_time = datetime.now()
+    # chat = {"Message": text, "Time": present_time, "Sent by me": True}
     chat = ChatMessage(text, True)
+    with open("chats.csv", "a") as chats:
+        writer = csv.writer(chats)
+        writer.writerow([text, present_time, "Sent by "+spy.name])
     friend_list[receiver_friend].chats.append(chat)
 
     print "Your secret message is ready. \n"
@@ -147,10 +166,13 @@ def read_message():
     sender_friend = int(select_a_friend()) - 1
     path = raw_input("Enter the path/name of the file: ")
     message = Steganography.decode(path)
-    #present_time = datetime.now()
+    present_time = datetime.now()
     print "Your secret message is ready:\n"
     print message, "\n"
     chat = ChatMessage(message, False)
+    with open("chats.csv", "a") as chats:
+        writer = csv.writer(chats)
+        writer.writerow([message, present_time, "Sent by "+friend_list[sender_friend].name])
     friend_list[sender_friend].chats.append(chat)
 
 
