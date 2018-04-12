@@ -17,8 +17,19 @@ class Spy:
 
 
 class ChatMessage:
-    def __init__(self, message, sent_by_me):
+    def __init__(self, name, message, sent_by_me):
+        self.name = name
         self.message = message
-        self.time = datetime.now()
+        self.time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.sent_by_me = sent_by_me
+
+
+class ChatOld:
+    def __init__(self, name, message, time, sent_by_me):
+        self.message = message
+        self.time = time
+        self.sent_by_me = sent_by_me
+        self.name = name
+
+
 

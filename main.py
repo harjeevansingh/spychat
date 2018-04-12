@@ -1,10 +1,12 @@
 # Let the spying begin xD
-from spy_details import Spy, ChatMessage
+from spy_details import Spy, ChatMessage, ChatOld
 from steganography.steganography import Steganography
-from datetime import datetime
+# from datetime import datetime
 import csv
 
+special_msg = {"SOS":"YOU DON'T HAVE TO WORRY", "SAVE ME":"YOU WILL BE RESCUED SOON", "HELP":"WE ARE COMING"}
 friend_list = []
+chats = []
 
 print "Welcome To The Spychat "
 
@@ -12,13 +14,22 @@ print "Welcome To The Spychat "
 def load_friends():
     with open("friends.csv", "rb") as friends:
         reader = csv.reader(friends)
-
         for row in reader:
             friend_list.append(Spy(row[0], row[1], row[2], row[3]))
 
 
-load_friends()
+def load_chats():
+    with open("chats.csv", "rb") as chats_data:
+        reader = csv.reader(chats_data)
 
+        for row in reader:
+            chats.append(ChatOld(row[0], row[1], row[2], row[3]))
+
+try:
+    load_chats()
+    load_friends()
+except IndexError:
+    print "MY CSV FILE HAS DIFF INDEX...SO IGNORING THE INDEX ERROR TO MAKE A NEW CSV"
 # Knowing whether the spy wants default name
 def_name = raw_input("Would you like to continue with default  Spy profile? (y/n)")
 
@@ -79,6 +90,8 @@ def app_menu():
             send_message()
         elif choice == "4":
             read_message()
+        elif choice == "5":
+            chat_history()
         elif choice == "6":
             show_menu = False
 
@@ -139,41 +152,58 @@ def add_friend():
 def select_a_friend():
     friend_num = 1
     for friend_name in friend_list:
-        print "%d. %s " % (friend_num, friend_name.name)
+        print "%d. %s.%s " % (friend_num, friend_name.salutation, friend_name.name)
         friend_num += 1
     print "Enter the number of the respective friend from the above list: "
-    return raw_input()
+    return int(raw_input())-1
 
 
 def send_message():
-    receiver_friend = int(select_a_friend()) - 1
+    receiver_friend = select_a_friend()
     image_path = raw_input("Enter the path/name of image: ")
     output_path = raw_input("Give the path/name for output: ")
     text = raw_input("Enter the message to send: ")
     Steganography.encode(image_path, output_path, text)
-    present_time = datetime.now()
+    # present_time = datetime.now()
     # chat = {"Message": text, "Time": present_time, "Sent by me": True}
-    chat = ChatMessage(text, True)
-    with open("chats.csv", "a") as chats:
-        writer = csv.writer(chats)
-        writer.writerow([text, present_time, "Sent by "+spy.name])
+    chat = ChatMessage(spy.name, text, True)
+    with open("chats.csv", "a") as chats_data:
+        writer = csv.writer(chats_data)
+        # writer.writerow([spy.name, text, present_time, "Sent by "+spy.name])
+        writer.writerow([spy.name, text, chat.time, chat.sent_by_me])
+
+
     friend_list[receiver_friend].chats.append(chat)
 
+    text = text.upper()
+
+    try:
+        print special_msg[text]
+    except KeyError:
+        pass
     print "Your secret message is ready. \n"
 
 
 def read_message():
-    sender_friend = int(select_a_friend()) - 1
+    sender_friend = select_a_friend()
     path = raw_input("Enter the path/name of the file: ")
     message = Steganography.decode(path)
-    present_time = datetime.now()
+    # present_time = datetime.now()
     print "Your secret message is ready:\n"
     print message, "\n"
-    chat = ChatMessage(message, False)
-    with open("chats.csv", "a") as chats:
-        writer = csv.writer(chats)
-        writer.writerow([message, present_time, "Sent by "+friend_list[sender_friend].name])
+    chat = ChatMessage(spy.name, message, False)
+    with open("chats.csv", "a") as chats_data:
+        writer = csv.writer(chats_data)
+        writer.writerow([spy.name, message, chat.time, chat.sent_by_me])
     friend_list[sender_friend].chats.append(chat)
+    print "Your secret message is saved.\n"
+
+
+def chat_history():
+    for x in range(len(chats)):
+        print '\x1b[6;34;0m' + 'Time: ' + chats[x].time + '\x1b[0m', \
+            '\x1b[6;30;0m' + "Message: " + chats[x].message + '\x1b[0m', \
+            '\x1b[6;31;0m' + "Sent By: " + chats[x].sent_by_me + '\x1b[0m'
 
 
 app_menu()
